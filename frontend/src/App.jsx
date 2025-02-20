@@ -10,11 +10,11 @@ import Cart from "./components/Cart";
 const App = () => (
   <div>
     <Navbar />
-   {/* <Home />*/}
+    <Home />
 
     {/*  <Register />*/}
    {/*  <Login />*/}
-   <Cart />
+   {/*<Cart />*/}
 
 
     <Footer />
