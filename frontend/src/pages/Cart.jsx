@@ -38,8 +38,9 @@ const Cart = () => {
     setCart(nuevoCart)
   }
   return(
-    <div className="container mt-5">
-      <h2 className="text-center mb-4"> Carrito de Compras</h2>
+    <div className="main-content">
+    <div className="container mt-5 fixed">
+      <h2 className="text-center mb-5 text-white "> Carrito de Compras</h2>
 
       {cart.map((item) => (
         <div className="card mb-3" key={item.id}>
@@ -81,9 +82,10 @@ const Cart = () => {
         
       ))}
       <div className="text-end mt-4"> 
-        <h3> Total: $ { calcularTotal()} </h3>
-        <button className="btn btn-success col-md-3 " id="pagar">Pagar</button>
+        <h3 className="text-white"> Total: $ { calcularTotal()} </h3>
+        <button className="btn btn-success col-md-3 text-white " id="pagar">Pagar</button>
       </div>
+    </div>
     </div>
   )
 }

@@ -1,17 +1,55 @@
-
+/* Asegura que el contenido se extienda correctamente */
 html, body {
-  height: 100%;
+  height: 100%; /* Asegura que el body tenga la altura completa */
   margin: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; 
-  align-items: center; 
+  background-color: #434344;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Contenedor principal */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  
+  background-color: #48494b;
+  min-height: 100vh; /* Asegura que ocupe al menos la altura de la pantalla */
+  padding-top: 60px; /* Espacio para el navbar fijo */
+}
+
+/* El contenedor de formulario */
+.card {
   width: 100%;
-  background-color: #242424;
-  color: rgba(255, 255, 255, 0.87);
+  max-width: 800px; /* Puedes ajustar el tamaño máximo si lo deseas */
   box-sizing: border-box;
 }
 
+/* Footer */
+footer {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #fff;
+  margin-top: auto; /* Hace que el footer se quede al fondo */
+}
+
+.navbar {
+  width: 100%;
+  position: fixed; /* Fijo en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+}
+
+body {
+  padding-bottom: 60px; /* Asegura que el footer no se oculte */
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -24,16 +62,15 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
-
 
 button {
   border-radius: 8px;
@@ -46,54 +83,52 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
 }
 
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1; 
-  width: 100%; 
-  padding: 20px; 
-  box-sizing: border-box; 
-  min-height: 100vh; 
-}
-
-
-footer {
-  width: 100%;
-  text-align: center;
-  padding: 20px;
-  background-color: #1a1a1a;
-  color: #fff;
-  position: relative;
-  box-sizing: border-box; 
-}
-
-
 @media (max-width: 768px) {
   html, body {
     padding: 10px;
   }
+}
+
+/* Clase de contenedor para el login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1; /* Ocupa todo el alto disponible */
+  min-height: 100vh; /* Garantiza que tenga la altura de la pantalla */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Solución específica para el layout del contenido */
+.content-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
