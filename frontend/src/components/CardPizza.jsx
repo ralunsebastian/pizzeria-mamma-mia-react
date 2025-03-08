@@ -1,30 +1,27 @@
 import React from "react";
+import { Card, Button } from "react-bootstrap";
 
-const CardPizza = ({ pizza }) => {
+const CardPizza = ({ pizza, addToCart }) => {
   return (
-    <div className="card">
-      <img 
-        src={pizza.img} 
-        alt={pizza.name} 
-        style={{ width: "100%", height: "auto" }} 
-      />
-      <h3>{pizza.name}</h3>
-      <p>{pizza.desc}</p>
-      <ul>
-        {pizza.ingredients.map((ingredient, index) => (
-          <li key={index}>{ingredient}</li>
-        ))}
-      </ul>
-      <p>Precio: ${pizza.price}</p>
-      
-      {/* Botón de "Añadir al carrito" */}
-      <button 
-        className="btn btn-primary" 
-        onClick={() => alert(`Añadido al carrito: ${pizza.name}`)}
-      >
-        Añadir al carrito
-      </button>
-    </div>
+    <Card className="h-100">
+      <Card.Img variant="top" src={pizza.img} style={{ height: "200px", objectFit: "cover" }} />
+      <Card.Body>
+        <Card.Title className="text-capitalize">{pizza.name}</Card.Title>
+        <Card.Text>Precio: ${pizza.price.toLocaleString()}</Card.Text>
+        
+        {/* Lista de ingredientes */}
+        <Card.Text>
+          <strong>Ingredientes:</strong>
+          <ul className="list-unstyled">
+            {pizza.ingredients.map((ingrediente, index) => (
+              <li key={index}>🍕 {ingrediente}</li>
+            ))}
+          </ul>
+        </Card.Text>
+
+        <Button variant="success" onClick={() => addToCart(pizza)}>🛒 Agregar al carrito</Button>
+      </Card.Body>
+    </Card>
   );
 };
 

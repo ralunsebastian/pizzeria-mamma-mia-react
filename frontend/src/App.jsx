@@ -8,12 +8,14 @@ import Pizza from "./pages/Pizza";
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
+import Header from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <div className="app-container">
       <Navbar />
+      <Header />
       <div className="content">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import CardPizza from "../components/CardPizza";
 import { Container, Row, Col } from "react-bootstrap";
+import { useCart } from "../context/CartContext"; // Importar el contexto
 
 const Home = () => {
   const [pizzas, setPizzas] = useState([]);
+  const { addToCart } = useCart(); // Obtener la función para agregar al carrito
 
   useEffect(() => {
     const fetchPizzas = async () => {
@@ -27,12 +29,12 @@ const Home = () => {
           <Row>
             {pizzas.map((pizza) => (
               <Col key={pizza.id} md={4} className="mb-4">
-                <CardPizza pizza={pizza} />
+                <CardPizza pizza={pizza} addToCart={addToCart} /> {/* Pasamos addToCart */}
               </Col>
             ))}
           </Row>
         ) : (
-          <p>Cargando pizzas...</p>
+          <p className="text-white text-center">Cargando pizzas...</p>
         )}
       </Container>
     </div>

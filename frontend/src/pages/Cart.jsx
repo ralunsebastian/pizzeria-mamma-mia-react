@@ -1,93 +1,60 @@
-import { useState } from "react"
-import { pizzaCart } from "../assets/data/pizzas"
+import { useCart } from "../context/CartContext";
 
 const Cart = () => {
+  const { cart, addToCart, removeFromCart, total } = useCart();
 
-  const [cart, setCart ] = useState(pizzaCart)
-
-  const calcularTotal = () => {
-    let total = 0;
-    cart.forEach((item) => {
-      total += item.price * item.count
-    })
-    return total
-  }
-
-  const aumentarCantidad = (id) => {
-    const nuevoCart = cart.map((item) => {
-      if (item.id === id){
-        return {
-          ...item,
-          count: item.count + 1,
-        }
-      }
-      return item
-    })
-    setCart(nuevoCart)
-  }
-  const disminuirCantidad = (id) => {
-    const nuevoCart = cart.map((item) => {
-      if (item.id === id){
-        return {
-          ...item,
-          count: item.count - 1,
-        }
-      }
-      return item
-    })
-    setCart(nuevoCart)
-  }
-  return(
+  return (
     <div className="main-content">
-    <div className="container mt-5 fixed">
-      <h2 className="text-center mb-5 text-white "> Carrito de Compras</h2>
+      <div className="container mt-5 fixed">
+        <h2 className="text-center mb-5 text-white">Carrito de Compras</h2>
 
-      {cart.map((item) => (
-        <div className="card mb-3" key={item.id}>
-          <div className="row g-0"> 
-            <div className="col-md-4">
-              <img 
-                src={item.img}
-                className="img-fluid rounded-start"
-                alt={item.name}
-                style={{ height:"200px", objectFit: "cover"}}
-              />
-            </div>
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="card-title text-capitalize"> {item.name} </h5>
-                <p className="card-text"> Precio: {item.price}</p>
-
-                <div className="d-flex align-items-center gap-2">
-                  <button 
-                    className="btn btn-outline-danger"    
-                    onClick={() => disminuirCantidad(item.id)}               
-                  >
-                    -
-                  </button>
-                  <span> {item.count} </span>
-                  <button 
-                    className="btn btn-outline-success" 
-                    onClick={() => aumentarCantidad(item.id)}                    
-                  >
-                    +
-                  </button>
+        {cart.length === 0 ? (
+          <p className="text-center text-white">🛒 Tu carrito está vacío</p>
+        ) : (
+          cart.map((item) => (
+            <div className="card mb-3" key={item.id}>
+              <div className="row g-0">
+                <div className="col-md-4">
+                  <img
+                    src={item.img}
+                    className="img-fluid rounded-start"
+                    alt={item.name}
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
                 </div>
-               
+                <div className="col-md-8">
+                  <div className="card-body">
+                    <h5 className="card-title text-capitalize">{item.name}</h5>
+                    <p className="card-text">Precio: ${item.price.toLocaleString()}</p>
+
+                    <div className="d-flex align-items-center gap-2">
+                      <button
+                        className="btn btn-outline-danger"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        -
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button
+                        className="btn btn-outline-success"
+                        onClick={() => addToCart(item)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
             </div>
-          </div>
+          ))
+        )}
+        <div className="text-end mt-4">
+          <h3 className="text-white">Total: ${total.toLocaleString()}</h3>
+          <button className="btn btn-success col-md-3 text-white">Pagar</button>
         </div>
-        
-      ))}
-      <div className="text-end mt-4"> 
-        <h3 className="text-white"> Total: $ { calcularTotal()} </h3>
-        <button className="btn btn-success col-md-3 text-white " id="pagar">Pagar</button>
       </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;
