@@ -1,46 +1,60 @@
-// Pizza.jsx
-import React, { useState, useEffect } from "react";
-import { Card, Button } from "react-bootstrap"; // Importamos componentes de React-Bootstrap
+import { Card, Button, Container } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";  // Importamos useNavigate
+import { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";  // Importamos el hook del carrito
 
 const Pizza = () => {
-  const [pizza, setPizza] = useState(null); // Estado para almacenar la pizza con ID p001
+  const { id } = useParams();
+  const [pizza, setPizza] = useState(null);
+  const { addToCart } = useCart();  // Desestructuramos la función addToCart
+  const navigate = useNavigate(); // Usamos useNavigate para redirigir
 
   useEffect(() => {
     const fetchPizza = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/pizzas/p001"); // Usamos el ID fijo p001
-        const data = await response.json();
-        setPizza(data); // Guardamos la pizza en el estado
+        const response = await fetch(`http://localhost:5000/api/pizzas/${id}`);
+        
+        if (!response.ok) {
+          // Si no hay una respuesta válida, redirigimos a la página NotFound
+          navigate('/notfound');
+        } else {
+          const data = await response.json();
+          setPizza(data);
+        }
       } catch (error) {
-        console.error("Error fetching pizza:", error);
+        console.error("Error al obtener la pizza:", error);
+        navigate('/notfound');  // En caso de error, redirigimos a la página NotFound
       }
     };
 
-    fetchPizza(); // Llamamos a la API cuando el componente se monta
-  }, []); // Solo se ejecuta una vez al montar el componente
+    fetchPizza();
+  }, [id, navigate]); // Aseguramos que useNavigate esté en las dependencias
+
+  const agregarAlCarrito = () => {
+    addToCart(pizza);  // Llamamos a la función addToCart para agregar la pizza
+    console.log(`Pizza ${pizza.name} añadida al carrito`);
+  };
+
+  if (!pizza) return <p>Cargando...</p>;
 
   return (
-    <div className="pizza-container d-flex justify-content-center mt-4">
-      {pizza ? (
-        <Card style={{ width: "18rem" }}>
-          <Card.Img variant="top" src={pizza.img} alt={pizza.name} />
-          <Card.Body>
-            <Card.Title>{pizza.name}</Card.Title>
-            <Card.Text>{pizza.desc}</Card.Text>
-            <ul>
-              {pizza.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-            <p><strong>Precio:</strong> ${pizza.price}</p>
-            {/* Botón "Añadir al carrito" */}
-            <Button variant="primary">Añadir al carrito</Button>
-          </Card.Body>
-        </Card>
-      ) : (
-        <p>Cargando pizza...</p> // Mensaje de carga mientras se obtiene la pizza
-      )}
-    </div>
+    <Container className="d-flex justify-content-center mt-5">
+      <Card style={{ width: "22rem", textAlign: "center" }} className="shadow-lg p-3 mb-5 bg-white rounded">
+        <Card.Img variant="top" src={pizza.img} alt={pizza.name} style={{ borderRadius: "10px" }} />
+        <Card.Body>
+          <Card.Title>{pizza.name}</Card.Title>
+          <Card.Text>
+            <strong>Ingredientes:</strong> {pizza.ingredients.join(", ")}
+          </Card.Text>
+          <Card.Text>
+            <strong>Precio:</strong> ${pizza.price}
+          </Card.Text>
+          <Button variant="success" onClick={agregarAlCarrito}>
+            🛒 Añadir al carrito
+          </Button>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

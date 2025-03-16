@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/UserContext";
 
 const Login = () => {
   const [form, setForm] = useState({
     email: '',
     password: ''
   });
-
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
+  const { login } = useUserContext();  // Usamos el login del contexto
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +18,17 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí va la lógica de validación y envío del formulario
-    setMessage("❌ Error en los datos de inicio de sesión");
+    const { email, password } = form;
+
+    // Simulamos la validación del login
+    if (email === 'seba@deslatam.cl' && password === '123456') {
+      const fakeToken = 'fake-token';  // Aquí el token puede ser un valor simulado o real
+      login(fakeToken);  // Actualizamos el token usando el método login
+      setMessage('🟢 Login exitoso');
+      navigate('/profile');
+    } else {
+      setMessage('❌ Error en los datos de inicio de sesión');
+    }
   };
 
   return (
