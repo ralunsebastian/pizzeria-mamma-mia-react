@@ -1,21 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from "../context/UserContext"; // Asegúrate de que la ruta sea correcta
-import { useCart } from '../context/CartContext'; // Ajusta la ruta según tu estructura de archivos
+import { useUserContext } from "../context/UserContext"; 
+import { useCart } from '../context/CartContext'; 
 
 const Cart = () => {
-  const { cart, addToCart, removeFromCart, total } = useCart();
-  const { token } = useUserContext(); // Obtenemos el token del contexto de usuario
-  const navigate = useNavigate(); // Para redirigir al login si no hay token
+  const { cart, addToCart, removeFromCart, total, clearCart } = useCart(); // Se agrega clearCart
+  const { token } = useUserContext(); 
+  const navigate = useNavigate(); 
+  const [loading, setLoading] = useState(false);
 
-  const handlePayment = () => {
+  const handleCheckout = async () => {
     if (!token) {
-      // Si el token es falso, redirigimos a la página de login
       navigate('/login');
-    } else {
-      // Si el token es verdadero, permitimos proceder con el pago
-      alert('Pago realizado');
+      return;
+    }
+
+    const checkoutData = {
+      items: cart.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      totalAmount: total,
+    };
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:5000/api/checkouts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(checkoutData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al procesar el pago');
+      }
+
+      const data = await response.json();
+      alert('Pago realizado con éxito');
+
+      clearCart(); // Vacía el carrito después del pago
+
+    } catch (error) {
+      console.error("Error al realizar el checkout:", error);
+      alert('Hubo un error al procesar el pago');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,11 +102,11 @@ const Cart = () => {
         <Col className="text-end">
           <h3 className="text-white">Total: ${total.toLocaleString()}</h3>
           <Button
-            onClick={handlePayment}
-            disabled={!token} // Deshabilitamos el botón si el token es falso
+            onClick={handleCheckout} 
+            disabled={!token || loading} 
             className="btn btn-success col-md-3 text-white"
           >
-            {token ? 'Pagar' : 'Inicia sesión para pagar'}
+            {loading ? 'Procesando...' : (token ? 'Pagar' : 'Inicia sesión para pagar')}
           </Button>
         </Col>
       </Row>
@@ -81,4 +115,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

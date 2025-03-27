@@ -1,44 +1,48 @@
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/UserContext";
 
 const Register = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
+  const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
   const [message, setMessage] = useState("");
+  const { login } = useUserContext();  
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.email || !form.password || !form.confirmPassword) {
-      setMessage("❌ Todos los campos son obligatorios.");
-      return;
-    }
-
-    if (form.password.length < 6) {
-      setMessage("❌ La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
+    setMessage("");
 
     if (form.password !== form.confirmPassword) {
       setMessage("❌ Las contraseñas no coinciden.");
       return;
     }
 
-    setMessage("✅ Registro exitoso");
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al registrarse");
+      }
+
+      login(data.token, data.email);  
+      setMessage("✅ Registro exitoso");
+      navigate("/profile");
+    } catch (error) {
+      setMessage(`❌ ${error.message}`);
+    }
   };
 
   return (
-    <div className="main-content">
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
@@ -54,9 +58,9 @@ const Register = () => {
                   placeholder="Ingresa tu correo"
                   value={form.email}
                   onChange={handleChange}
+                  required
                 />
               </div>
-
               <div className="mb-3">
                 <label className="form-label">Contraseña</label>
                 <input
@@ -66,9 +70,10 @@ const Register = () => {
                   placeholder="Ingresa tu contraseña"
                   value={form.password}
                   onChange={handleChange}
+                  required
+                  minLength="6"
                 />
               </div>
-
               <div className="mb-3">
                 <label className="form-label">Confirmar contraseña</label>
                 <input
@@ -78,25 +83,18 @@ const Register = () => {
                   placeholder="Repite tu contraseña"
                   value={form.confirmPassword}
                   onChange={handleChange}
+                  required
                 />
               </div>
-
-              <button type="submit" className="btn btn-primary w-100">
-                Registrarse
-              </button>
+              <button type="submit" className="btn btn-primary w-100">Registrarse</button>
             </form>
-
-            {message && (
-              <div className={`alert mt-3 ${message.includes("❌") ? "alert-danger" : "alert-success"}`}>
-                {message}
-              </div>
-            )}
+            {message && <div className={`alert mt-3 ${message.includes("❌") ? "alert-danger" : "alert-success"}`}>{message}</div>}
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
 
 export default Register;
+

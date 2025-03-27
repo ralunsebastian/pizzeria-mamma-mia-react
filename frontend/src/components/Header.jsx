@@ -5,15 +5,20 @@ const Header = () => (
   <header
     className="text-white text-center py-5"
     style={{
-        backgroundImage: `url(${bannerImage})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "300px", // Ajusta según el tamaño deseado
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
+
+      position: "relative",
+    minHeight: "300px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    color: "white", // Asegura que el texto sea visible
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5)), url(${bannerImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+
     }}
   >
     <Container>

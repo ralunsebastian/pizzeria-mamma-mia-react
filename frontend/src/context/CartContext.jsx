@@ -21,19 +21,24 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (id) => {
-    setCart((prevCart) => {
-      return prevCart
+    setCart((prevCart) =>
+      prevCart
         .map((item) =>
           item.id === id ? { ...item, quantity: item.quantity - 1 } : item
         )
-        .filter((item) => item.quantity > 0); // Elimina solo si llega a Cero
-    });
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+  // 🔥 Función para vaciar el carrito después del pago
+  const clearCart = () => {
+    setCart([]); 
   };
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, total }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, total }}>
       {children}
     </CartContext.Provider>
   );
